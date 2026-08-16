@@ -1,0 +1,24 @@
+experiment_id,method,dataset,num_clients,num_tasks,classes_per_task,alpha,seed,rounds_per_task,local_epochs,batch_size,learning_rate,memory_size,temperature,distillation_weight,min_weight,max_weight,results_file,model_file
+main_fedavg_seed42,FedAvg-FCL,CIFAR-10,5,5,2,0.5,42,3,1,64,0.001,0,,,,,results/fcl_fedavg_baseline_r3.csv,results/fcl_fedavg_baseline_r3_model.pth
+main_fedavg_seed123,FedAvg-FCL,CIFAR-10,5,5,2,0.5,123,3,1,64,0.001,0,,,,,results/fcl_fedavg_baseline_r3_seed123.csv,results/fcl_fedavg_baseline_r3_seed123_model.pth
+main_fedavg_seed2026,FedAvg-FCL,CIFAR-10,5,5,2,0.5,2026,3,1,64,0.001,0,,,,,results/fcl_fedavg_baseline_r3_seed2026.csv,results/fcl_fedavg_baseline_r3_seed2026_model.pth
+replay_seed42,Replay,CIFAR-10,5,5,2,0.5,42,3,1,64,0.001,500,,,,,results/fcl_replay_r3_seed42.csv,results/fcl_replay_r3_seed42_model.pth
+replay_seed123,Replay,CIFAR-10,5,5,2,0.5,123,3,1,64,0.001,500,,,,,results/fcl_replay_r3_seed123.csv,results/fcl_replay_r3_seed123_model.pth
+replay_seed2026,Replay,CIFAR-10,5,5,2,0.5,2026,3,1,64,0.001,500,,,,,results/fcl_replay_r3_seed2026.csv,results/fcl_replay_r3_seed2026_model.pth
+lwf_seed42,LwF,CIFAR-10,5,5,2,0.5,42,3,1,64,0.001,0,2.0,1.0,,,results/fcl_lwf_r3_seed42.csv,results/fcl_lwf_r3_seed42_model.pth
+lwf_seed123,LwF,CIFAR-10,5,5,2,0.5,123,3,1,64,0.001,0,2.0,1.0,,,results/fcl_lwf_r3_seed123.csv,results/fcl_lwf_r3_seed123_model.pth
+lwf_seed2026,LwF,CIFAR-10,5,5,2,0.5,2026,3,1,64,0.001,0,2.0,1.0,,,results/fcl_lwf_r3_seed2026.csv,results/fcl_lwf_r3_seed2026_model.pth
+fixed_replay_lwf_seed42,Replay+LwF,CIFAR-10,5,5,2,0.5,42,3,1,64,0.001,500,2.0,1.0,,,results/fcl_replay_lwf_w1.0_r3.csv,results/fcl_replay_lwf_w1.0_r3_model.pth
+fixed_replay_lwf_seed123,Replay+LwF,CIFAR-10,5,5,2,0.5,123,3,1,64,0.001,500,2.0,1.0,,,results/fcl_replay_lwf_w1.0_r3_seed123.csv,results/fcl_replay_lwf_w1.0_r3_seed123_model.pth
+fixed_replay_lwf_seed2026,Replay+LwF,CIFAR-10,5,5,2,0.5,2026,3,1,64,0.001,500,2.0,1.0,,,results/fcl_replay_lwf_w1.0_r3_seed2026.csv,results/fcl_replay_lwf_w1.0_r3_seed2026_model.pth
+fixed_replay_lwf_seed777,Replay+LwF,CIFAR-10,5,5,2,0.5,777,3,1,64,0.001,500,2.0,1.0,,,results/fcl_replay_lwf_w1.0_r3_seed777.csv,results/fcl_replay_lwf_w1.0_r3_seed777_model.pth
+fixed_replay_lwf_seed1001,Replay+LwF,CIFAR-10,5,5,2,0.5,1001,3,1,64,0.001,500,2.0,1.0,,,results/fcl_replay_lwf_w1.0_r3_seed1001.csv,results/fcl_replay_lwf_w1.0_r3_seed1001_model.pth
+gradient_balanced_seed42,Gradient-Balanced Replay+LwF,CIFAR-10,5,5,2,0.5,42,3,1,64,0.001,500,2.0,adaptive,0.5,1.5,results/fcl_gradient_balanced_w0.5_1.5_r3_seed42.csv,results/fcl_gradient_balanced_w0.5_1.5_r3_seed42_model.pth
+gradient_balanced_seed123,Gradient-Balanced Replay+LwF,CIFAR-10,5,5,2,0.5,123,3,1,64,0.001,500,2.0,adaptive,0.5,1.5,results/fcl_gradient_balanced_w0.5_1.5_r3_seed123.csv,results/fcl_gradient_balanced_w0.5_1.5_r3_seed123_model.pth
+gradient_balanced_seed2026,Gradient-Balanced Replay+LwF,CIFAR-10,5,5,2,0.5,2026,3,1,64,0.001,500,2.0,adaptive,0.5,1.5,results/fcl_gradient_balanced_w0.5_1.5_r3_seed2026.csv,results/fcl_gradient_balanced_w0.5_1.5_r3_seed2026_model.pth
+gradient_balanced_seed777,Gradient-Balanced Replay+LwF,CIFAR-10,5,5,2,0.5,777,3,1,64,0.001,500,2.0,adaptive,0.5,1.5,results/fcl_gradient_balanced_w0.5_1.5_r3_seed777.csv,results/fcl_gradient_balanced_w0.5_1.5_r3_seed777_model.pth
+gradient_balanced_seed1001,Gradient-Balanced Replay+LwF,CIFAR-10,5,5,2,0.5,1001,3,1,64,0.001,500,2.0,adaptive,0.5,1.5,results/fcl_gradient_balanced_w0.5_1.5_r3_seed1001.csv,results/fcl_gradient_balanced_w0.5_1.5_r3_seed1001_model.pth
+robust_fixed_alpha0.1_seed42,Replay+LwF,CIFAR-10,5,5,2,0.1,42,3,1,64,0.001,500,2.0,1.0,,,results/fcl_replay_lwf_alpha0.1_w1.0_r3_seed42.csv,results/fcl_replay_lwf_alpha0.1_w1.0_r3_seed42_model.pth
+robust_gb_alpha0.1_seed42,Gradient-Balanced Replay+LwF,CIFAR-10,5,5,2,0.1,42,3,1,64,0.001,500,2.0,adaptive,0.5,1.5,results/fcl_gradient_balanced_alpha0.1_w0.5_1.5_r3_seed42.csv,results/fcl_gradient_balanced_alpha0.1_w0.5_1.5_r3_seed42_model.pth
+robust_fixed_alpha1.0_seed42,Replay+LwF,CIFAR-10,5,5,2,1.0,42,3,1,64,0.001,500,2.0,1.0,,,results/fcl_replay_lwf_alpha1.0_w1.0_r3_seed42.csv,results/fcl_replay_lwf_alpha1.0_w1.0_r3_seed42_model.pth
+robust_gb_alpha1.0_seed42,Gradient-Balanced Replay+LwF,CIFAR-10,5,5,2,1.0,42,3,1,64,0.001,500,2.0,adaptive,0.5,1.5,results/fcl_gradient_balanced_alpha1.0_w0.5_1.5_r3_seed42.csv,results/fcl_gradient_balanced_alpha1.0_w0.5_1.5_r3_seed42_model.pth

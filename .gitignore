@@ -1,0 +1,40 @@
+# Python virtual environments
+.venv/
+.venv1/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyCharm / IDE
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# CIFAR-10 downloaded dataset
+data/cifar-10-batches-py/
+data/cifar-10-python.tar.gz
+
+# Model checkpoints
+*.pth
+*.pt
+*.ckpt
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Packaging
+build/
+dist/
+*.egg-info/

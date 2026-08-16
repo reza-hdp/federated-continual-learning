@@ -1,0 +1,5 @@
+method,accuracy_mean,accuracy_std,forgetting_mean,forgetting_std
+FedAvg-FCL,16.42,1.04,68.75,2.84
+Replay,19.33,4.72,65.55,2.79
+LwF,19.89,1.84,43.66,5.93
+Replay+LwF,46.33,4.08,5.23,0.56

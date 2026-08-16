@@ -1,0 +1,4 @@
+alpha,fixed_accuracy,gb_accuracy,accuracy_difference,fixed_forgetting,gb_forgetting,forgetting_reduction,relative_reduction
+0.1,32.19,28.28,-3.91,7.56,3.99,3.58,47.27
+0.5,46.57,45.77,-0.8,4.8,2.01,2.79,58.07
+1.0,48.29,44.46,-3.83,5.15,1.47,3.68,71.36
