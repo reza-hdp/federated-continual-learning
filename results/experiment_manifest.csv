@@ -22,3 +22,8 @@ robust_fixed_alpha0.1_seed42,Replay+LwF,CIFAR-10,5,5,2,0.1,42,3,1,64,0.001,500,2
 robust_gb_alpha0.1_seed42,Gradient-Balanced Replay+LwF,CIFAR-10,5,5,2,0.1,42,3,1,64,0.001,500,2.0,adaptive,0.5,1.5,results/fcl_gradient_balanced_alpha0.1_w0.5_1.5_r3_seed42.csv,results/fcl_gradient_balanced_alpha0.1_w0.5_1.5_r3_seed42_model.pth
 robust_fixed_alpha1.0_seed42,Replay+LwF,CIFAR-10,5,5,2,1.0,42,3,1,64,0.001,500,2.0,1.0,,,results/fcl_replay_lwf_alpha1.0_w1.0_r3_seed42.csv,results/fcl_replay_lwf_alpha1.0_w1.0_r3_seed42_model.pth
 robust_gb_alpha1.0_seed42,Gradient-Balanced Replay+LwF,CIFAR-10,5,5,2,1.0,42,3,1,64,0.001,500,2.0,adaptive,0.5,1.5,results/fcl_gradient_balanced_alpha1.0_w0.5_1.5_r3_seed42.csv,results/fcl_gradient_balanced_alpha1.0_w0.5_1.5_r3_seed42_model.pth
+fed_agem_seed42,Adapted Fed-A-GEM,CIFAR-10,5,5,2,0.5,42,3,1,64,0.001,500,,,,,results/fcl_fed_agem_lr0.001_alpha0.5_r3_seed42.csv,results/fcl_fed_agem_lr0.001_alpha0.5_r3_seed42_model.pth
+fed_agem_seed123,Adapted Fed-A-GEM,CIFAR-10,5,5,2,0.5,123,3,1,64,0.001,500,,,,,results/fcl_fed_agem_lr0.001_alpha0.5_r3_seed123.csv,results/fcl_fed_agem_lr0.001_alpha0.5_r3_seed123_model.pth
+fed_agem_seed2026,Adapted Fed-A-GEM,CIFAR-10,5,5,2,0.5,2026,3,1,64,0.001,500,,,,,results/fcl_fed_agem_lr0.001_alpha0.5_r3_seed2026.csv,results/fcl_fed_agem_lr0.001_alpha0.5_r3_seed2026_model.pth
+fed_agem_seed777,Adapted Fed-A-GEM,CIFAR-10,5,5,2,0.5,777,3,1,64,0.001,500,,,,,results/fcl_fed_agem_lr0.001_alpha0.5_r3_seed777.csv,results/fcl_fed_agem_lr0.001_alpha0.5_r3_seed777_model.pth
+fed_agem_seed1001,Adapted Fed-A-GEM,CIFAR-10,5,5,2,0.5,1001,3,1,64,0.001,500,,,,,results/fcl_fed_agem_lr0.001_alpha0.5_r3_seed1001.csv,results/fcl_fed_agem_lr0.001_alpha0.5_r3_seed1001_model.pth

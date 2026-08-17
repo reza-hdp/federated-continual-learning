@@ -1,20 +1,31 @@
 import csv
-import os
+from pathlib import Path
 
 
 # ============================================================
-# Setup
+# Project paths
 # ============================================================
 
-os.makedirs(
-    "../../results",
+PROJECT_ROOT = (
+    Path(__file__)
+    .resolve()
+    .parents[2]
+)
+
+RESULTS_DIR = (
+    PROJECT_ROOT
+    / "results"
+)
+
+RESULTS_DIR.mkdir(
+    parents=True,
     exist_ok=True
 )
 
 
 # ============================================================
 # Table 1
-# Main ablation study
+# Initial three-seed ablation study
 # ============================================================
 
 ablation_results = [
@@ -56,6 +67,13 @@ ablation_results = [
 
 five_seed_results = [
     {
+        "method": "Adapted Fed-A-GEM",
+        "accuracy_mean": 13.15,
+        "accuracy_std": 0.45,
+        "forgetting_mean": 60.00,
+        "forgetting_std": 4.46
+    },
+    {
         "method": "Fixed Replay+LwF",
         "accuracy_mean": 46.94,
         "accuracy_std": 3.40,
@@ -75,6 +93,7 @@ five_seed_results = [
 # ============================================================
 # Table 3
 # Heterogeneity robustness
+# Seed 42 only
 # ============================================================
 
 heterogeneity_results = [
@@ -178,7 +197,8 @@ weight_results = [
 
 # ============================================================
 # Table 5
-# Statistical comparison
+# Paired five-seed statistical comparison
+# Fixed Replay+LwF vs Gradient-Balanced
 # ============================================================
 
 statistical_results = [
@@ -219,7 +239,8 @@ def save_table(
     with open(
         file_path,
         "w",
-        newline=""
+        newline="",
+        encoding="utf-8"
     ) as output_file:
 
         writer = csv.DictWriter(
@@ -241,40 +262,46 @@ def save_table(
 # ============================================================
 
 save_table(
-    "../../results/paper_table_ablation.csv",
+    RESULTS_DIR
+    / "paper_table_ablation.csv",
     ablation_results
 )
 
 save_table(
-    "../../results/paper_table_main_5seeds.csv",
+    RESULTS_DIR
+    / "paper_table_main_5seeds.csv",
     five_seed_results
 )
 
 save_table(
-    "../../results/paper_table_heterogeneity.csv",
+    RESULTS_DIR
+    / "paper_table_heterogeneity.csv",
     heterogeneity_results
 )
 
 save_table(
-    "../../results/paper_table_adaptive_weights.csv",
+    RESULTS_DIR
+    / "paper_table_adaptive_weights.csv",
     weight_results
 )
 
 save_table(
-    "../../results/paper_table_statistics.csv",
+    RESULTS_DIR
+    / "paper_table_statistics.csv",
     statistical_results
 )
 
 
 # ============================================================
-# Print paper-ready tables
+# Print Table 1
 # ============================================================
 
 print()
 print("=" * 90)
 
 print(
-    "TABLE 1 — FCL Ablation Study"
+    "TABLE 1 — FCL Ablation Study "
+    "(Three Seeds)"
 )
 
 print("=" * 90)
@@ -286,6 +313,7 @@ print(
 )
 
 print("-" * 90)
+
 
 for row in ablation_results:
 
@@ -306,14 +334,18 @@ for row in ablation_results:
     )
 
 
+# ============================================================
+# Print Table 2
+# ============================================================
+
 print()
-print("=" * 90)
+print("=" * 95)
 
 print(
     "TABLE 2 — Five-Seed Main Comparison"
 )
 
-print("=" * 90)
+print("=" * 95)
 
 print(
     f"{'Method':<25}"
@@ -321,7 +353,8 @@ print(
     f"{'Average Forgetting'}"
 )
 
-print("-" * 90)
+print("-" * 95)
+
 
 for row in five_seed_results:
 
@@ -342,11 +375,16 @@ for row in five_seed_results:
     )
 
 
+# ============================================================
+# Print Table 3
+# ============================================================
+
 print()
 print("=" * 110)
 
 print(
-    "TABLE 3 — Heterogeneity Robustness (Seed 42)"
+    "TABLE 3 — Heterogeneity Robustness "
+    "(Seed 42)"
 )
 
 print("=" * 110)
@@ -364,6 +402,7 @@ print(
 
 print("-" * 110)
 
+
 for row in heterogeneity_results:
 
     print(
@@ -377,6 +416,10 @@ for row in heterogeneity_results:
         f"{row['relative_reduction']:.2f}%"
     )
 
+
+# ============================================================
+# Print Table 4
+# ============================================================
 
 print()
 print("=" * 90)
@@ -396,6 +439,7 @@ print(
 )
 
 print("-" * 90)
+
 
 for row in weight_results:
 
@@ -420,6 +464,10 @@ for row in weight_results:
     )
 
 
+# ============================================================
+# Print Table 5
+# ============================================================
+
 print()
 print("=" * 100)
 
@@ -428,6 +476,12 @@ print(
 )
 
 print("=" * 100)
+
+print(
+    "Comparison: Fixed Replay+LwF "
+    "vs Gradient-Balanced"
+)
+
 
 for row in statistical_results:
 
@@ -474,13 +528,13 @@ for row in statistical_results:
 # ============================================================
 
 print()
-print("=" * 90)
+print("=" * 95)
 
 print(
     "KEY EXPERIMENTAL FINDINGS"
 )
 
-print("=" * 90)
+print("=" * 95)
 
 print(
     "1. Replay and LwF individually provide limited "
@@ -493,35 +547,55 @@ print(
 )
 
 print(
-    "3. Gradient-Balanced FCL further reduces average "
-    "forgetting from 4.76 pp to 1.77 pp across five seeds."
+    "3. The adapted Fed-A-GEM baseline achieves "
+    "13.15 ± 0.45% final average accuracy and "
+    "60.00 ± 4.46 pp average forgetting across five seeds."
 )
 
 print(
-    "4. This corresponds to a 62.89% relative reduction "
-    "in forgetting."
+    "4. Gradient-Balanced FCL reduces average "
+    "forgetting from 4.76 pp to 1.77 pp relative "
+    "to fixed Replay+LwF across five seeds."
 )
 
 print(
-    "5. The retention improvement is accompanied by a "
-    "2.18 pp reduction in final average accuracy."
+    "5. This corresponds to a 62.89% relative "
+    "reduction in forgetting."
 )
 
 print(
-    "6. Gradient-Balanced reduces forgetting for all five "
-    "tested seeds."
+    "6. The retention improvement is accompanied "
+    "by a 2.18 pp reduction in final average accuracy."
 )
 
 print(
-    "7. Seed-42 heterogeneity experiments show lower "
+    "7. Gradient-Balanced reduces forgetting relative "
+    "to fixed Replay+LwF for all five tested seeds."
+)
+
+print(
+    "8. Seed-42 heterogeneity experiments show lower "
     "forgetting at alpha = 0.1, 0.5, and 1.0."
 )
 
 print(
-    "8. Adaptive weights range from 1.0619 to 1.4903, "
-    "showing that the mechanism does not collapse to the "
-    "fixed weight of 1.0."
+    "9. Adaptive weights range from 1.0619 to 1.4903, "
+    "showing that the mechanism does not collapse "
+    "to the fixed weight of 1.0."
 )
+
+print()
+print(
+    "IMPORTANT: Fed-A-GEM is an adaptation of its "
+    "gradient-projection mechanism to this project's "
+    "fixed experimental protocol and should be labeled "
+    "'Adapted Fed-A-GEM' in the manuscript."
+)
+
+
+# ============================================================
+# Finished
+# ============================================================
 
 print()
 print(
@@ -531,21 +605,26 @@ print(
 print()
 
 print(
-    "results/paper_table_ablation.csv"
+    RESULTS_DIR
+    / "paper_table_ablation.csv"
 )
 
 print(
-    "results/paper_table_main_5seeds.csv"
+    RESULTS_DIR
+    / "paper_table_main_5seeds.csv"
 )
 
 print(
-    "results/paper_table_heterogeneity.csv"
+    RESULTS_DIR
+    / "paper_table_heterogeneity.csv"
 )
 
 print(
-    "results/paper_table_adaptive_weights.csv"
+    RESULTS_DIR
+    / "paper_table_adaptive_weights.csv"
 )
 
 print(
-    "results/paper_table_statistics.csv"
+    RESULTS_DIR
+    / "paper_table_statistics.csv"
 )

@@ -1,3 +1,4 @@
 method,accuracy_mean,accuracy_std,forgetting_mean,forgetting_std
+Adapted Fed-A-GEM,13.15,0.45,60.0,4.46
 Fixed Replay+LwF,46.94,3.4,4.76,0.76
 Gradient-Balanced,44.76,3.5,1.77,0.34

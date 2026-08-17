@@ -1,13 +1,25 @@
 import csv
 import os
+from pathlib import Path
 
 
 # ============================================================
 # Setup
 # ============================================================
 
-os.makedirs(
-    "../../results",
+PROJECT_ROOT = (
+    Path(__file__)
+    .resolve()
+    .parents[2]
+)
+
+RESULTS_DIR = (
+    PROJECT_ROOT
+    / "results"
+)
+
+RESULTS_DIR.mkdir(
+    parents=True,
     exist_ok=True
 )
 
@@ -666,8 +678,149 @@ experiments = [
             "fcl_gradient_balanced_"
             "alpha1.0_w0.5_1.5_r3_seed42_model.pth"
         )
+    },
+
+    # ========================================================
+    # Adapted Fed-A-GEM, five seeds
+    # ========================================================
+
+    {
+        "experiment_id": "fed_agem_seed42",
+        "method": "Adapted Fed-A-GEM",
+        "dataset": "CIFAR-10",
+        "num_clients": 5,
+        "num_tasks": 5,
+        "classes_per_task": 2,
+        "alpha": 0.5,
+        "seed": 42,
+        "rounds_per_task": 3,
+        "local_epochs": 1,
+        "batch_size": 64,
+        "learning_rate": 0.001,
+        "memory_size": 500,
+        "temperature": "",
+        "distillation_weight": "",
+        "min_weight": "",
+        "max_weight": "",
+        "results_file": (
+            "results/"
+            "fcl_fed_agem_lr0.001_alpha0.5_r3_seed42.csv"
+        ),
+        "model_file": (
+            "results/"
+            "fcl_fed_agem_lr0.001_alpha0.5_r3_seed42_model.pth"
+        )
+    },
+    {
+        "experiment_id": "fed_agem_seed123",
+        "method": "Adapted Fed-A-GEM",
+        "dataset": "CIFAR-10",
+        "num_clients": 5,
+        "num_tasks": 5,
+        "classes_per_task": 2,
+        "alpha": 0.5,
+        "seed": 123,
+        "rounds_per_task": 3,
+        "local_epochs": 1,
+        "batch_size": 64,
+        "learning_rate": 0.001,
+        "memory_size": 500,
+        "temperature": "",
+        "distillation_weight": "",
+        "min_weight": "",
+        "max_weight": "",
+        "results_file": (
+            "results/"
+            "fcl_fed_agem_lr0.001_alpha0.5_r3_seed123.csv"
+        ),
+        "model_file": (
+            "results/"
+            "fcl_fed_agem_lr0.001_alpha0.5_r3_seed123_model.pth"
+        )
+    },
+    {
+        "experiment_id": "fed_agem_seed2026",
+        "method": "Adapted Fed-A-GEM",
+        "dataset": "CIFAR-10",
+        "num_clients": 5,
+        "num_tasks": 5,
+        "classes_per_task": 2,
+        "alpha": 0.5,
+        "seed": 2026,
+        "rounds_per_task": 3,
+        "local_epochs": 1,
+        "batch_size": 64,
+        "learning_rate": 0.001,
+        "memory_size": 500,
+        "temperature": "",
+        "distillation_weight": "",
+        "min_weight": "",
+        "max_weight": "",
+        "results_file": (
+            "results/"
+            "fcl_fed_agem_lr0.001_alpha0.5_r3_seed2026.csv"
+        ),
+        "model_file": (
+            "results/"
+            "fcl_fed_agem_lr0.001_alpha0.5_r3_seed2026_model.pth"
+        )
+    },
+    {
+        "experiment_id": "fed_agem_seed777",
+        "method": "Adapted Fed-A-GEM",
+        "dataset": "CIFAR-10",
+        "num_clients": 5,
+        "num_tasks": 5,
+        "classes_per_task": 2,
+        "alpha": 0.5,
+        "seed": 777,
+        "rounds_per_task": 3,
+        "local_epochs": 1,
+        "batch_size": 64,
+        "learning_rate": 0.001,
+        "memory_size": 500,
+        "temperature": "",
+        "distillation_weight": "",
+        "min_weight": "",
+        "max_weight": "",
+        "results_file": (
+            "results/"
+            "fcl_fed_agem_lr0.001_alpha0.5_r3_seed777.csv"
+        ),
+        "model_file": (
+            "results/"
+            "fcl_fed_agem_lr0.001_alpha0.5_r3_seed777_model.pth"
+        )
+    },
+    {
+        "experiment_id": "fed_agem_seed1001",
+        "method": "Adapted Fed-A-GEM",
+        "dataset": "CIFAR-10",
+        "num_clients": 5,
+        "num_tasks": 5,
+        "classes_per_task": 2,
+        "alpha": 0.5,
+        "seed": 1001,
+        "rounds_per_task": 3,
+        "local_epochs": 1,
+        "batch_size": 64,
+        "learning_rate": 0.001,
+        "memory_size": 500,
+        "temperature": "",
+        "distillation_weight": "",
+        "min_weight": "",
+        "max_weight": "",
+        "results_file": (
+            "results/"
+            "fcl_fed_agem_lr0.001_alpha0.5_r3_seed1001.csv"
+        ),
+        "model_file": (
+            "results/"
+            "fcl_fed_agem_lr0.001_alpha0.5_r3_seed1001_model.pth"
+        )
     }
 ]
+
 
 
 # ============================================================
@@ -675,8 +828,8 @@ experiments = [
 # ============================================================
 
 OUTPUT_FILE = (
-    "results/"
-    "experiment_manifest.csv"
+    RESULTS_DIR
+    / "experiment_manifest.csv"
 )
 
 
@@ -713,15 +866,17 @@ missing_models = []
 for experiment in experiments:
 
     results_file = (
-        experiment[
-            "results_file"
-        ]
+            PROJECT_ROOT
+            / experiment[
+                "results_file"
+            ]
     )
 
     model_file = (
-        experiment[
-            "model_file"
-        ]
+            PROJECT_ROOT
+            / experiment[
+                "model_file"
+            ]
     )
 
     if not os.path.exists(
