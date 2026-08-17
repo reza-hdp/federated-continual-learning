@@ -1,22 +1,29 @@
 # Gradient-Balanced Federated Continual Learning
 
-A research implementation of **Federated Continual Learning (FCL)** for studying catastrophic forgetting under heterogeneous client data, with a gradient-based adaptive retention mechanism.
+A research implementation of **Federated Continual Learning (FCL)** for studying catastrophic forgetting under
+heterogeneous client data, with a gradient-based adaptive retention mechanism.
 
-The project evaluates standard federated continual learning, replay, Learning without Forgetting (LwF), fixed Replay+LwF, and a proposed **Gradient-Balanced Replay+LwF** approach on class-incremental CIFAR-10.
+The project evaluates standard federated continual learning, replay, Learning without Forgetting (LwF), fixed
+Replay+LwF, an adapted Fed-A-GEM gradient-projection baseline, and a proposed **Gradient-Balanced Replay+LwF** approach
+on class-incremental CIFAR-10.
 
-The proposed method dynamically adjusts retention strength using gradient-balance information rather than relying on a single fixed distillation weight.
+The proposed method dynamically adjusts retention strength using gradient-balance information rather than relying on a
+single fixed distillation weight.
 
 ---
 
 ## Overview
 
-Federated Learning (FL) enables multiple clients to collaboratively train a global model without directly sharing their local datasets.
+Federated Learning (FL) enables multiple clients to collaboratively train a global model without directly sharing their
+local datasets.
 
 Continual Learning (CL) considers systems that learn a sequence of tasks over time.
 
-Combining the two produces **Federated Continual Learning**, where distributed clients must learn new tasks while retaining knowledge acquired from previous tasks.
+Combining the two produces **Federated Continual Learning**, where distributed clients must learn new tasks while
+retaining knowledge acquired from previous tasks.
 
-A major challenge is **catastrophic forgetting**: learning a new task can substantially degrade performance on previously learned tasks.
+A major challenge is **catastrophic forgetting**: learning a new task can substantially degrade performance on
+previously learned tasks.
 
 This repository investigates that problem using:
 
@@ -24,6 +31,7 @@ This repository investigates that problem using:
 - Experience Replay
 - Learning without Forgetting (LwF)
 - Replay + LwF
+- Adapted Fed-A-GEM gradient projection
 - Gradient diagnostics
 - Gradient-Balanced adaptive retention
 
@@ -87,13 +95,14 @@ Task 4: Classes 6 and 7
 Task 5: Classes 8 and 9
 ```
 
-### Federated configuration
+### Federated Configuration
 
 ```text
 Clients: 5
 Tasks: 5
 Classes per task: 2
 Federated rounds per task: 3
+Local epochs: 1
 Batch size: 64
 Replay memory size: 500
 LwF temperature: 2.0
@@ -120,8 +129,6 @@ alpha = 1.0
 
 ## Methods Compared
 
-The experiments include the following methods.
-
 ### FedAvg-FCL
 
 Federated continual-learning baseline without an explicit continual-learning retention mechanism.
@@ -132,11 +139,48 @@ Stores examples from previous tasks and reuses them during subsequent training.
 
 ### Learning without Forgetting (LwF)
 
-Uses knowledge distillation to encourage the current model to preserve predictions associated with previously learned knowledge.
+Uses knowledge distillation to encourage the current model to preserve predictions associated with previously learned
+knowledge.
 
 ### Replay + LwF
 
 Combines replay memory with a fixed LwF distillation weight.
+
+### Adapted Fed-A-GEM
+
+Implements an adapted gradient-projection baseline inspired by Fed-A-GEM.
+
+Clients maintain replay buffers and compute reference gradients from remembered samples. When the gradient for
+current-task learning conflicts with the global reference gradient, the update is projected to reduce destructive
+interference.
+
+The baseline is adapted to the same fixed protocol used in this repository:
+
+```text
+Clients: 5
+Tasks: 5
+Rounds per task: 3
+Local epochs: 1
+Memory size: 500
+Dirichlet alpha: 0.5
+```
+
+A learning-rate sweep was performed at Seed 42:
+
+```text
+0.001
+0.01
+0.1
+```
+
+The best tested configuration was:
+
+```text
+Learning rate = 0.001
+```
+
+The implementation should therefore be interpreted as an **adapted Fed-A-GEM baseline**, not as a bit-for-bit
+reproduction of the original implementation.
 
 ### Gradient-Balanced Replay + LwF
 
@@ -150,14 +194,15 @@ Uses Replay+LwF while dynamically adapting retention strength using gradient-bal
 
 Three seeds were used for the initial ablation study.
 
-| Method | Final Average Accuracy | Average Forgetting |
-|---|---:|---:|
-| FedAvg-FCL | 16.42 ± 1.04% | 68.75 ± 2.84 pp |
-| Replay | 19.33 ± 4.72% | 65.55 ± 2.79 pp |
-| LwF | 19.89 ± 1.84% | 43.66 ± 5.93 pp |
-| Replay + LwF | **46.33 ± 4.08%** | **5.23 ± 0.56 pp** |
+| Method       | Final Average Accuracy | Average Forgetting |
+|:-------------|-----------------------:|-------------------:|
+| FedAvg-FCL   |          16.42 ± 1.04% |    68.75 ± 2.84 pp |
+| Replay       |          19.33 ± 4.72% |    65.55 ± 2.79 pp |
+| LwF          |          19.89 ± 1.84% |    43.66 ± 5.93 pp |
+| Replay + LwF |      **46.33 ± 4.08%** | **5.23 ± 0.56 pp** |
 
-Replay and LwF individually provide limited protection in this setting, whereas their combination produces a large improvement over the FedAvg-FCL baseline.
+Replay and LwF individually provide limited protection in this setting, whereas their combination produces a large
+improvement over the FedAvg-FCL baseline.
 
 ---
 
@@ -173,10 +218,14 @@ The primary comparison uses five seeds:
 1001
 ```
 
-| Method | Final Average Accuracy | Average Forgetting |
-|---|---:|---:|
-| Fixed Replay + LwF | **46.94 ± 3.40%** | 4.76 ± 0.76 pp |
-| Gradient-Balanced | 44.76 ± 3.50% | **1.77 ± 0.34 pp** |
+| Method             | Final Average Accuracy | Average Forgetting |
+|:-------------------|-----------------------:|-------------------:|
+| Adapted Fed-A-GEM  |          13.15 ± 0.45% |    60.00 ± 4.46 pp |
+| Fixed Replay + LwF |      **46.94 ± 3.40%** |     4.76 ± 0.76 pp |
+| Gradient-Balanced  |          44.76 ± 3.50% | **1.77 ± 0.34 pp** |
+
+The adapted Fed-A-GEM baseline reduces forgetting somewhat relative to the FedAvg-FCL baseline, but severe catastrophic
+forgetting remains under this experimental protocol.
 
 Gradient-Balanced FCL reduces average forgetting from:
 
@@ -184,15 +233,15 @@ Gradient-Balanced FCL reduces average forgetting from:
 4.76 pp -> 1.77 pp
 ```
 
-corresponding to a:
+relative to fixed Replay+LwF.
+
+This corresponds to:
 
 ```text
 62.89% relative reduction in forgetting
 ```
 
-compared with fixed Replay+LwF.
-
-This improvement in retention is accompanied by a reduction of:
+The improved retention is accompanied by a reduction of:
 
 ```text
 2.18 percentage points
@@ -204,17 +253,33 @@ The results therefore indicate a **stability-plasticity trade-off** rather than 
 
 ---
 
-## Per-Seed Comparison
+## Per-Seed Fixed vs. Gradient-Balanced Comparison
 
 | Seed | Fixed Accuracy | GB Accuracy | Fixed Forgetting | GB Forgetting |
-|---:|---:|---:|---:|---:|
-| 42 | 46.57% | 45.77% | 4.80 pp | 2.01 pp |
-| 123 | 42.14% | 40.22% | 5.03 pp | 1.85 pp |
-| 2026 | 50.28% | 46.60% | 5.86 pp | 1.68 pp |
-| 777 | 50.12% | 48.97% | 3.90 pp | 2.07 pp |
-| 1001 | 45.60% | 42.26% | 4.23 pp | 1.23 pp |
+|-----:|---------------:|------------:|-----------------:|--------------:|
+|   42 |         46.57% |      45.77% |          4.80 pp |       2.01 pp |
+|  123 |         42.14% |      40.22% |          5.03 pp |       1.85 pp |
+| 2026 |         50.28% |      46.60% |          5.86 pp |       1.68 pp |
+|  777 |         50.12% |      48.97% |          3.90 pp |       2.07 pp |
+| 1001 |         45.60% |      42.26% |          4.23 pp |       1.23 pp |
 
 Gradient-Balanced reduces average forgetting relative to the fixed method for all five tested seeds.
+
+---
+
+## Adapted Fed-A-GEM Five-Seed Results
+
+|          Seed | Final Average Accuracy |  Average Forgetting |
+|--------------:|-----------------------:|--------------------:|
+|            42 |                 13.52% |            59.29 pp |
+|           123 |                 13.71% |            56.06 pp |
+|          2026 |                 12.92% |            56.58 pp |
+|           777 |                 12.64% |            67.15 pp |
+|          1001 |                 12.98% |            60.93 pp |
+| **Mean ± SD** |      **13.15 ± 0.45%** | **60.00 ± 4.46 pp** |
+
+The adapted Fed-A-GEM result should be interpreted in the context of this repository's fixed task-based protocol and
+architecture.
 
 ---
 
@@ -238,7 +303,8 @@ Cohen's dz: +3.538
 Exact two-sided sign-flip p-value: 0.0625
 ```
 
-Only five paired seeds are available, so inferential power is limited. The paired differences, confidence intervals, consistency across seeds, and effect sizes should therefore be interpreted together with the p-values.
+Only five paired seeds are available, so inferential power is limited. The paired differences, confidence intervals,
+consistency across seeds, and effect sizes should therefore be interpreted together with the p-values.
 
 ---
 
@@ -247,10 +313,10 @@ Only five paired seeds are available, so inferential power is limited. The paire
 Additional experiments examine different levels of client heterogeneity using Seed 42.
 
 | Dirichlet α | Fixed Accuracy | GB Accuracy | Accuracy Difference | Fixed Forgetting | GB Forgetting | Forgetting Reduction |
-|---:|---:|---:|---:|---:|---:|---:|
-| 0.1 | 32.19% | 28.28% | -3.91 pp | 7.56 pp | 3.99 pp | +3.58 pp |
-| 0.5 | 46.57% | 45.77% | -0.80 pp | 4.80 pp | 2.01 pp | +2.79 pp |
-| 1.0 | 48.29% | 44.46% | -3.83 pp | 5.15 pp | 1.47 pp | +3.68 pp |
+|------------:|---------------:|------------:|--------------------:|-----------------:|--------------:|---------------------:|
+|         0.1 |         32.19% |      28.28% |            -3.91 pp |          7.56 pp |       3.99 pp |             +3.58 pp |
+|         0.5 |         46.57% |      45.77% |            -0.80 pp |          4.80 pp |       2.01 pp |             +2.79 pp |
+|         1.0 |         48.29% |      44.46% |            -3.83 pp |          5.15 pp |       1.47 pp |             +3.68 pp |
 
 Relative forgetting reductions are:
 
@@ -260,7 +326,8 @@ alpha = 0.5: 58.07%
 alpha = 1.0: 71.36%
 ```
 
-Across these Seed-42 experiments, Gradient-Balanced FCL consistently reduces forgetting while sacrificing some final average accuracy.
+Across these Seed-42 experiments, Gradient-Balanced FCL consistently reduces forgetting while sacrificing some final
+average accuracy.
 
 ---
 
@@ -278,19 +345,19 @@ Standard deviation: 0.0951
 ## By Task
 
 | Task | Mean Weight | Standard Deviation |
-|---:|---:|---:|
-| 2 | 1.3892 | 0.0701 |
-| 3 | 1.2129 | 0.0807 |
-| 4 | 1.2528 | 0.0571 |
-| 5 | 1.3302 | 0.0548 |
+|-----:|------------:|-------------------:|
+|    2 |      1.3892 |             0.0701 |
+|    3 |      1.2129 |             0.0807 |
+|    4 |      1.2528 |             0.0571 |
+|    5 |      1.3302 |             0.0548 |
 
 ## By Federated Round
 
 | Round | Mean Weight | Standard Deviation |
-|---:|---:|---:|
-| 1 | 1.3594 | 0.0729 |
-| 2 | 1.2735 | 0.0863 |
-| 3 | 1.2560 | 0.0916 |
+|------:|------------:|-------------------:|
+|     1 |      1.3594 |             0.0729 |
+|     2 |      1.2735 |             0.0863 |
+|     3 |      1.2560 |             0.0916 |
 
 The results indicate stronger task- and round-dependent adaptation than persistent client-specific differences.
 
@@ -315,7 +382,8 @@ Spearman correlation: -0.4421
 Mean absolute correlation: 0.4576
 ```
 
-These diagnostics suggest that gradient information contains useful but incomplete information about future forgetting, motivating adaptive rather than purely fixed retention.
+These diagnostics suggest that gradient information contains useful but incomplete information about future forgetting,
+motivating adaptive rather than purely fixed retention.
 
 ---
 
@@ -354,6 +422,11 @@ federated-continual-learning/
 ├── src/
 │   ├── algorithms/
 │   ├── clients/
+│   │   ├── client.py
+│   │   ├── continual_client.py
+│   │   ├── replay_lwf_client.py
+│   │   ├── gradient_balanced_client.py
+│   │   └── fed_agem_client.py
 │   ├── data/
 │   ├── models/
 │   ├── server/
@@ -364,6 +437,7 @@ federated-continual-learning/
 │   │   ├── comparison scripts
 │   │   ├── diagnostic scripts
 │   │   ├── statistical tests
+│   │   ├── Fed-A-GEM summary
 │   │   ├── experiment manifest generation
 │   │   └── paper-table generation
 │   │
@@ -383,6 +457,7 @@ federated-continual-learning/
 ├── run_fcl_lwf.py
 ├── run_fcl_replay_lwf.py
 ├── run_fcl_gradient_balanced.py
+├── run_fcl_fed_agem.py
 │
 ├── requirements.txt
 ├── .gitignore
@@ -410,12 +485,17 @@ Install the required packages:
 pip install -r requirements.txt
 ```
 
-The experiments were developed using:
+The main Python dependencies are:
 
 ```text
-PyTorch 2.8.0
-torchvision 0.23.0
+torch==2.8.0
+torchvision==0.23.0
+numpy
+pandas
+matplotlib
 ```
+
+The experiments were developed using PyTorch 2.8.0 and torchvision 0.23.0.
 
 ---
 
@@ -423,7 +503,7 @@ torchvision 0.23.0
 
 Run commands from the repository root so that relative paths to `results/`, `figures/`, and `src/` resolve correctly.
 
-## FedAvg-FCL baseline
+## FedAvg-FCL Baseline
 
 ```bash
 python run_fcl_baseline.py
@@ -453,10 +533,38 @@ python run_fcl_replay_lwf.py
 python run_fcl_gradient_balanced.py
 ```
 
+## Adapted Fed-A-GEM
+
+```bash
+python run_fcl_fed_agem.py
+```
+
 Experimental outputs are written to:
 
 ```text
 results/
+```
+
+---
+
+# Analysis Scripts
+
+Generate the Fed-A-GEM five-seed summary:
+
+```bash
+python scripts/analysis/summarize_fed_agem.py
+```
+
+Generate paper-oriented tables:
+
+```bash
+python scripts/analysis/create_fcl_paper_tables.py
+```
+
+Regenerate and verify the experiment manifest:
+
+```bash
+python scripts/analysis/create_experiment_manifest.py
 ```
 
 ---
@@ -469,11 +577,25 @@ The repository contains an experiment manifest:
 results/experiment_manifest.csv
 ```
 
-The manifest records the experimental configuration and corresponding result/model artifact for the experiments used during the study.
+The manifest records the experimental configuration and corresponding result/model artifact for the experiments used
+during the study.
 
-At the repository-cleanup checkpoint, all 23 experiments recorded in the manifest had their corresponding result and model artifacts available locally.
+At the current reproducibility checkpoint:
 
-Model checkpoints are excluded from Git tracking by default because of their size. Numerical result CSV files and publication figures can remain tracked.
+```text
+Experiments recorded: 28
+Missing result files: 0
+Missing model files: 0
+```
+
+Model checkpoints are excluded from Git tracking by default because of their size. Numerical result CSV files and
+publication figures remain tracked.
+
+The adapted Fed-A-GEM summary is available as:
+
+```text
+results/fcl_fed_agem_5seed_summary.csv
+```
 
 Paper-oriented summary tables are available as:
 
@@ -485,18 +607,31 @@ results/paper_table_adaptive_weights.csv
 results/paper_table_statistics.csv
 ```
 
+Fed-A-GEM learning-rate diagnostics and five-seed experiment outputs are also stored under:
+
+```text
+results/
+```
+
 ---
 
 # Main Findings
 
-The experiments support four main observations:
+The current experiments support the following observations:
 
 1. Vanilla FedAvg-FCL experiences severe catastrophic forgetting in the evaluated class-incremental setting.
-2. Replay and LwF individually are insufficient to prevent severe forgetting, while combining them produces a much stronger baseline.
-3. Gradient-Balanced FCL further reduces forgetting consistently across the five tested seeds.
-4. The additional retention comes at the cost of lower final average accuracy, demonstrating an explicit stability-plasticity trade-off.
+2. Replay and LwF individually provide limited protection against severe forgetting, while combining them produces a
+   much stronger baseline.
+3. The adapted Fed-A-GEM gradient-projection baseline reduces forgetting somewhat relative to FedAvg-FCL but still
+   exhibits severe forgetting under this protocol.
+4. Gradient-Balanced FCL reduces average forgetting relative to fixed Replay+LwF across all five tested seeds.
+5. Gradient-Balanced reduces average forgetting from 4.76 pp to 1.77 pp, corresponding to a 62.89% relative reduction.
+6. This retention improvement comes with a 2.18 percentage-point decrease in final average accuracy.
+7. Adaptive retention weights vary substantially across tasks and federated rounds, indicating that the mechanism does
+   not collapse to a constant coefficient.
 
-The proposed approach should therefore be interpreted as a mechanism for **strengthening retention adaptively**, rather than as a method that dominates the fixed baseline on every performance metric.
+The proposed approach should therefore be interpreted as a mechanism for **strengthening retention adaptively**, rather
+than as a method that dominates every baseline on every performance metric.
 
 ---
 
@@ -507,11 +642,15 @@ The current experimental study has several limitations:
 - CIFAR-10 is the primary dataset.
 - The main experiments use five clients.
 - Five seeds are used for the primary Gradient-Balanced comparison.
+- Five seeds are used for the adapted Fed-A-GEM comparison after a three-point Seed-42 learning-rate sweep.
 - The initial ablation study uses three seeds.
 - Heterogeneity robustness experiments across multiple Dirichlet alpha values currently use Seed 42.
 - Only three federated rounds are performed per continual task.
 - The adaptive mechanism improves retention while reducing final average accuracy.
-- Larger-scale datasets, more clients, additional baselines, and broader hyperparameter studies remain future work.
+- The Fed-A-GEM implementation is adapted to this repository's task-based protocol and is not a bit-for-bit reproduction
+  of the original method.
+- Larger datasets, additional architectures, more clients, additional FCL baselines, and broader hyperparameter studies
+  remain future work.
 
 These limitations should be considered when interpreting the generality of the results.
 
@@ -521,9 +660,11 @@ These limitations should be considered when interpreting the generality of the r
 
 This repository contains an experimental research implementation.
 
-The current results are intended to support a research manuscript on gradient-aware adaptive retention for federated continual learning.
+The current results are intended to support a research manuscript on gradient-aware adaptive retention for federated
+continual learning.
 
-The project is under active research development, and results should not yet be interpreted as establishing state-of-the-art performance.
+The project is under active research development, and the current experiments should not be interpreted as establishing
+state-of-the-art performance.
 
 ---
 
